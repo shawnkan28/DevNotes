@@ -116,3 +116,65 @@ function App() {
 
 export default App
 ```
+## useEffect
+### Note
+if you run the app in Dev Mode with <StrictMode> in main.jsx, it will cause a re-render. So useEffects will run twice even though its not suppose to. The function of this re-render is to test for variable mutation and other debugging functions.
+### Function
+this hook is very useful to load data when screen renders. do note that useEffect is always activated after the initial render. This means there will be a re-render once when useEffects completes. So to ensure the child components is not constantly re-rendering, we only want to render after all data is extracted, we can use Loading useState to control. If data is not loaded, show loading screen, if data is loaded, show everything. See Code E.g.
+### App.jsx
+```javascript
+import { getData } from "./services/db";
+function App() {
+  console.log("App.jsx is Rendered");
+  const [merchList, setMerchList] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const dbList = async () => {
+      try {
+        const data = await getData();
+        console.log(data);
+        setMerchList(data);
+      } catch (err) {
+        console.error("Failed to fetch data:", err);
+      }
+
+    }
+    dbList();
+  }, [])
+
+  if (isLoading) {
+    return <div>Loading ...</div>;
+  }
+
+  return (
+    <>
+      <div className="main-container">
+        <div className="main-gallery">
+          {
+            merchList.map(e => {
+              return <GalleryItem item={e} key={e.id} onOpenModal={handleOpen}/>
+            })
+          }
+        </div>
+      </div>
+    </>
+  )
+}
+export default App
+```
+### db.js
+```javascript
+export const getData = async () => {
+    const port = 5000;
+    const url = `http://127.0.0.1:${port}/db/get`;
+    const response = await fetch(url);
+    const data = await response.json();
+    if (response.status == 200) {
+        return data.result;
+    } else {
+        throw new Error(`Status Response from Server: ${response.status}`);
+    }
+}
+```
+
