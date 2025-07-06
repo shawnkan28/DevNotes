@@ -24,6 +24,21 @@ How to determind if this is dev server or prod server. I typically use the os en
 # "th" being the environ variable that i set "dev" or "prd" to
 server_type = os.environ.get("th") 
 ```
+## How to avoid CORS
+this should only be used for development only
+```powershell
+pip install flask-cors
+```
+```python
+from flask import Flask
+from flask_cors import CORS
+
+app = Flask(__name__)
+CORS(app)  # Allow all origins
+# OR
+app = Flask(__name__)
+CORS(app, origins=["http://localhost:3000"])
+```
 
 # React - Javascript/Html
 Currently, i'm just trying to remember what i've learned in the past. I'll be starting my React project from the basics.<br>
