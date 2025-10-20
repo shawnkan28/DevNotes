@@ -53,4 +53,7 @@ sudo su -
 
 # Change Password
 passwd <username>
+
+# Run Docker Container
+docker compose up -d
 ```
